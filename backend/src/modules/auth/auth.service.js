@@ -1,6 +1,6 @@
 import User from "../user/user.model.js";
 import Company from "../company/company.model.js";
-import CompanyMember from "../companyMember/companyMember.model.js";
+import CompanyMember from "../companyMember/company-member.model.js";
 import bcrypt from "bcryptjs";
 
 import RefreshToken from "./refreshToken.model.js";

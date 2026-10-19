@@ -1,11 +1,11 @@
 import {catchAsync} from "../shared/errors/asynchronousError .js";
-import CompanyMember from "../modules/companyMember/companyMember.model.js";
+import CompanyMember from "../modules/companyMember/company-member.model.js";
 import {AppError} from "../shared/errors/appError.js";
 
 export const authorizeCompanyMember =(roles)=> catchAsync(async (req, res, next) => {
     const userId=req.user._id;
     const companyId=req.params.companyId;
-    console.log({companyId,userId})
+    console.log({companyId,userId,params:req.params});
     const member=await CompanyMember.findOne({
         user:userId,
         company:companyId,
