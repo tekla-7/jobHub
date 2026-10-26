@@ -6,7 +6,7 @@ export default class APIFeatures {
 
     filter() {
         const queryObj = {...this.queryString};
-        const excludedFields = ['page', 'sort', 'pageSize', 'fields',    'search'];
+        const excludedFields = ['page', 'sort', 'pageSize', 'fields','search'];
         excludedFields.forEach(item => delete queryObj[item]);
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(

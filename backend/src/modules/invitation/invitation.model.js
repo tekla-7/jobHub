@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import {COMPANY_ROLES} from "../company/company.constants.js";
 import {INVITATION_STATUS} from "./invitation.constants.js";
-import crypto from "node:crypto";
 import {createHash} from "./invitation.service.js";
 const invitationSchema = new mongoose.Schema({
     email: {

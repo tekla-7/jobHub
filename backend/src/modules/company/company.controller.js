@@ -43,13 +43,12 @@ export const updateCompany = catchAsync(async (req, res, next) => {
     for (const field of IMAGE_FIELDS) {
         const file = req.files?.[field]?.[0];
         if (file) {
-            console.log(field);
             const idField = `${field}PublicId`;
             const oldPublicId = company[idField];
             if (oldPublicId) {
                 oldPublicIds.push(oldPublicId);
             }
-            const result = await uploadToCloudinary(file.buffer);
+            const result = await uploadToCloudinary(file.buffer,'companies');
             company[field] = result.secure_url;
             company[idField] = result.public_id;
         }

@@ -2,8 +2,10 @@ import crypto from "node:crypto";
 import {catchAsync} from "../../shared/errors/asynchronousError .js";
 import {resend} from "../../config/resend.js";
 import {AppError} from "../../shared/errors/appError.js";
-import {create, createHash, getById, getByToken} from "./invitation.service.js";
+import {create, getById, getByToken} from "./invitation.service.js";
 import {INVITATION_STATUS} from "./invitation.constants.js";
+import {findUser} from "../user/user.service.js";
+import {findOneCompanyMember} from "../companyMember/company-member.service.js";
 
 ///@desc post invitation
 ///@route post /api/invitations/company/:companyId
@@ -11,6 +13,13 @@ export const createInvitation = catchAsync(async (req, res, next) => {
     const {companyId} = req.params;
     const {email, role} = req.body;
     const userId = req.user._id;
+    const user = await findUser({email});
+    if (user) {
+        const exitingMember = await findOneCompanyMember({company: companyId, user: user})
+        if (exitingMember) {
+            return next(new AppError('User is already a member of this company'))
+        }
+    }
     const token = crypto.randomBytes(32).toString('hex');
 
     const invitationAcceptUrl = `${process.env.FRONTEND_URL}/api/invitations/accept?token=${token}`
@@ -51,7 +60,8 @@ export const createInvitation = catchAsync(async (req, res, next) => {
 ///@route get /api/invitations
 export const getInvitation = catchAsync(async (req, res, next) => {
     const {token} = req.query;
-    const invitation = await getByToken(token).populate('company', 'name');
+    const invitation = await getByToken(token).populate('company', 'name').populate('invitedBy', 'name');
+
     return res.status(200).json({
         message: 'Success.',
         data: invitation,
@@ -89,10 +99,10 @@ export const rejectInvitation = catchAsync(async (req, res, next) => {
         return next(new AppError('Invitation is expired!'), 410);
     }
     if (invitation.status !== INVITATION_STATUS.PENDING) {
-        return next (new AppError('Invitation has already been processed!', 410));
+        return next(new AppError('Invitation has already been processed!', 410));
     }
     if (userEmail !== invitation.email) {
-        return next (new AppError('This invitation belongs to another user!', 403));
+        return next(new AppError('This invitation belongs to another user!', 403));
     }
     invitation.status = INVITATION_STATUS.REJECTED;
     invitation.respondedAt = new Date();
@@ -107,7 +117,7 @@ export const cancelInvitation = catchAsync(async (req, res, next) => {
     const {id} = req.params
     const invitation = await getById(id);
     if (invitation.expiresAt.getTime() < Date.now()) {
-        return next( new AppError('Invitation is expired!', 410));
+        return next(new AppError('Invitation is expired!', 410));
     }
     if (invitation.status !== INVITATION_STATUS.PENDING) {
         return next(new AppError('Invitation has already been processed!', 410));
