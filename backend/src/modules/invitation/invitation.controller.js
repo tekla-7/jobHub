@@ -4,7 +4,7 @@ import {resend} from "../../config/resend.js";
 import {AppError} from "../../shared/errors/appError.js";
 import {create, getById, getByToken} from "./invitation.service.js";
 import {INVITATION_STATUS} from "./invitation.constants.js";
-import {findUser} from "../user/user.service.js";
+import {findUser} from "../auth/user.service.js";
 import {findOneCompanyMember} from "../companyMember/company-member.service.js";
 
 ///@desc post invitation

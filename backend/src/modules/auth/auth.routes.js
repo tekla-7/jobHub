@@ -1,5 +1,5 @@
 import express from "express";
-import {login, logout, refresh, register} from "./auth.controller.js";
+import {changePassword, login, logout, refresh, register} from "./auth.controller.js";
 import {protect} from "../../middleware/auth.middleware.js";
 
 const router=express.Router();
@@ -8,7 +8,7 @@ router.post('/login', login)
 router.post('/refreshToken', refresh);
 router.use(protect)
 router.post('/logout', logout);
-// router.post('/change-password',resetPassword)
+router.patch('/change-password',changePassword)
 
 
 export default router;

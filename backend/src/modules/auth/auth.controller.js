@@ -1,6 +1,6 @@
 import {
     correctPassword,
-    createAuthSession, deleteRefreshToken, findRefreshToken, findUser,
+    createAuthSession, deleteRefreshToken, findById, findRefreshToken, findUser,
     registerCompany,
     registerCompanyMember,
     registerUser
@@ -9,55 +9,60 @@ import {catchAsync} from "../../shared/errors/asynchronousError .js";
 import {AppError} from "../../shared/errors/appError.js";
 import {createJSONToken, validateJSONRefreshToken} from "../../shared/utils/auth.js";
 import {REFRESH_COOKIE_OPTIONS, REFRESH_TOKEN} from "./auth.constants.js";
+import {registerUserDetails} from "../user/userDetails.service.js";
+import mongoose from "mongoose";
+import {hash} from "bcryptjs";
 ///@desc create new user
 ///@route POST /api/auth/register
 export const register = catchAsync(async (req, res, next) => {
     const {type} = req.body;
-    let data = {};
-    if (type === 'user') {
-        const {name, email, password, confirmPassword, company} = req.body;
-        const user = await registerUser({
-            name,
-            email,
-            password,
-            confirmPassword,
-        });
-        data = {
-            user
-        };
-    } else if (type === 'company') {
-        const {name, email, password, confirmPassword, companyName} = req.body;
-        const company = await registerCompany(companyName);
-        const user = await registerUser({
-            name,
-            email,
-            password,
-            confirmPassword,
-        });
-        await registerCompanyMember({user: user.id, company: company.id, role: 'Owner'})
-        data = {
-            user,
-            company
-        };
-    } else {
+    if (!['user', 'company'].includes(type)) {
         return next(new AppError('Type is necessary', 400));
-
     }
-    const {refreshToken, token} = await createAuthSession({
-        id: data.user.id,
-    });
+    try {
+        const session = await mongoose.startSession();
+        let user;
+        let company;
+        session.startTransaction();
+        const {name, email, password, confirmPassword, companyName} = req.body;
+        user = await registerUser({
+            name,
+            email,
+            password,
+            confirmPassword,
+        }, session);
+        if (type === 'company') {
+            company = await registerCompany(companyName, session);
+            await registerCompanyMember({user: user.id, company: company.id, role: 'Owner'}, session)
 
-    res.cookie(REFRESH_TOKEN, refreshToken, REFRESH_COOKIE_OPTIONS);
-    res.status(201).json({
-        message: `${type} created successfully`,
-        data,
-        type,
-        token
-    });
 
+        }
+        await registerUserDetails(user.id, session)
+        await session.commitTransaction()
+
+        const {refreshToken, token} = await createAuthSession({
+            id: user.id,
+        });
+
+        res.cookie(REFRESH_TOKEN, refreshToken, REFRESH_COOKIE_OPTIONS);
+        res.status(201).json({
+            message: `${type} created successfully`,
+            data: {
+                user,
+                userDetails,
+                ...(company && {compnay})
+            },
+            type,
+            token
+        });
+    } catch (error) {
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        await session.endSession()
+    }
 
 })
-
 
 ///@desc create new user
 ///@route POST /api/auth/login
@@ -88,12 +93,12 @@ export const login = catchAsync(async (req, res, next) => {
 export const refresh = catchAsync(async (req, res, next) => {
     const refreshToken = req.cookies[REFRESH_TOKEN];
     if (!refreshToken) {
-       return next(new AppError('Refresh token not found.User is unauthorized', 401));
+        return next(new AppError('Refresh token not found.User is unauthorized', 401));
     }
     const {id} = validateJSONRefreshToken(refreshToken);
     const storeRefreshToken = await findRefreshToken(refreshToken);
-    if(!storeRefreshToken){
-       return next(new AppError('Refresh token not found.User is unauthorized', 401));
+    if (!storeRefreshToken) {
+        return next(new AppError('Refresh token not found.User is unauthorized', 401));
     }
     if (storeRefreshToken.expiresAt <= new Date()) {
         return next(
@@ -109,9 +114,10 @@ export const refresh = catchAsync(async (req, res, next) => {
         token: newAccessToken,
     });
 })
-///@desc create new user
+
+///@desc logout
 ///@route POST /api/auth/logout
-export const logout=catchAsync(async (req,res,next)=>{
+export const logout = catchAsync(async (req, res, next) => {
     const refreshToken = req.cookies[REFRESH_TOKEN];
     if (!refreshToken) {
         return next(new AppError('Refresh token not found.User is unauthorized', 401));
@@ -120,4 +126,28 @@ export const logout=catchAsync(async (req,res,next)=>{
     return res.status(200).json({
         message: "Log out successfully",
     });
+})
+
+///@desc change password
+///@route Patch /api/auth/change-password
+export const changePassword = catchAsync(async (req, res, next) => {
+    const {password, newPassword, newConfirmPassword} = req.body
+    const id = req.user._id
+    const user = await findById(id);
+    if (!user || !(await correctPassword(password, user.password))) {
+        return next(new AppError('Invalid password', 401));
+    }
+    if (newPassword !== newConfirmPassword) {
+        return next(new AppError('Invalid password', 401));
+    }
+    user.password = await hash(this.password, 10);
+    await user.save();
+    await deleteRefreshToken(user._id)
+    const {refreshToken,token}=await createAuthSession(({id:iser._id}))
+    res.cookie(REFRESH_TOKEN, refreshToken, REFRESH_COOKIE_OPTIONS);
+    return res.status(200).json({
+        message: "Password changed successfully",
+        token: token,
+    });
+
 })

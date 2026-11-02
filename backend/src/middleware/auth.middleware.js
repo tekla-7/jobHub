@@ -2,7 +2,7 @@ import {catchAsync} from "../shared/errors/asynchronousError .js";
 import {AppError} from "../shared/errors/appError.js";
 import jwt from "jsonwebtoken";
 import { promisify } from 'util';
-import User, {userSchema} from "../modules/user/user.model.js";
+import User, {userSchema} from "../modules/auth/user.model.js";
 
 export const protect = catchAsync(async (req, res, next) => {
     let token;

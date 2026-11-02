@@ -34,7 +34,6 @@ export const userSchema = new mongoose.Schema({
     passwordChangedAt: {
         type: Date,
     },
-
     company: String,
 }, {
     timestamps: true

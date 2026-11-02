@@ -2,6 +2,7 @@ import express from "express";
 import {protect} from "../../middleware/auth.middleware.js";
 import uploadCV from "../../middleware/uploadCV.js";
 import {
+    applicationStatusChange,
     getApplication,
     myApplication,
     myCompanyApplication,
