@@ -9,6 +9,7 @@ import {useLogin} from "./hooks/useAuth";
 import {z} from "zod";
 import {homeFor} from "../../shared/utils/homeFrom";
 import {alertBox, btnGhost, btnPrimary, linkStrong, orDivider} from "./authStyles";
+import {PATHS} from "../../routes/paths";
 const schema = z.object({
     email: z.string().email('Enter a valid email'),
     password: z.string().min(1, 'Password is required'),
@@ -33,7 +34,7 @@ export default function LoginPage() {
         <AuthCard
             title="Welcome back"
             subtitle="Log in to continue."
-            footer={<>Don't have an account? <Link to="/authentication/register" className={linkStrong}>Create one</Link></>}
+            footer={<>Don't have an account? <Link to={PATHS.register} className={linkStrong}>Create one</Link></>}
         >
             {/*<button type="button" className={btnGhost}>*/}
             {/*    <b className="text-[#4285F4]">G</b> Continue with Google*/}
@@ -50,7 +51,7 @@ export default function LoginPage() {
                 />
                 <FormField
                     label="Password" type="password" placeholder="••••••••" autoComplete="current-password"
-                    labelRight={<Link to="/forgot-password" className="font-medium text-[#28508E]">Forgot password?</Link>}
+                    labelRight={<Link to={PATHS.resetPassword} className="font-medium text-[#28508E]">Forgot password?</Link>}
                     error={errors.password?.message} {...register('password')}
                 />
                 <button type="submit" disabled={loginMutation.isPending} className={btnPrimary}>

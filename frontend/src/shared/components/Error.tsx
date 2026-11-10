@@ -33,7 +33,7 @@ export default function ErrorPage() {
                 )}
 
                 <Link
-                    to="/frontend/public"
+                    to="/"
                     className="mt-8 inline-block rounded-md bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
                 >
                     Go Home

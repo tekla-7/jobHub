@@ -1,9 +1,9 @@
 import {
     correctPassword,
-    createAuthSession, deleteRefreshToken, findById, findRefreshToken, findUser,
+    createAuthSession, deleteRefreshToken, findById, findRefreshToken, findUser, findUserCompanyMemberships,
     registerCompany,
     registerCompanyMember,
-    registerUser
+    registerUser,
 } from "./auth.service.js";
 import {catchAsync} from "../../shared/errors/asynchronousError .js";
 import {AppError} from "../../shared/errors/appError.js";
@@ -75,6 +75,7 @@ export const login = catchAsync(async (req, res, next) => {
     if (!user || !(await correctPassword(password, user.password))) {
         return next(new AppError('Invalid email or password', 401));
     }
+    const memberships = await findUserCompanyMemberships(user._id);
     const {refreshToken, token} = await createAuthSession({
         id: user._id,
     });
@@ -84,7 +85,7 @@ export const login = catchAsync(async (req, res, next) => {
     res.status(200).json({
         message: `Login successfully`,
         token,
-        user: userWithoutPassword
+        user: {...userWithoutPassword,memberships}
     });
 })
 

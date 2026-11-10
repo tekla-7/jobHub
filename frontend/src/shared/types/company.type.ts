@@ -1,0 +1,16 @@
+export interface Company {
+    _id: string,
+    name:string,
+    createdAt: string,
+    updatedAt: string,
+    __v: number,
+    coverImg?:string,
+    description?: string,
+    industry?: string,
+    location?: string,
+    logo?: string ,
+    phone?: string,
+    profileImg?: string,
+    website?: string,
+    openRoles?:number ,
+}

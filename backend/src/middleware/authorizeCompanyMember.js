@@ -5,6 +5,9 @@ import {AppError} from "../shared/errors/appError.js";
 export const authorizeCompanyMember =(roles)=> catchAsync(async (req, res, next) => {
     const userId=req.user._id;
     const companyId=req.params.companyId;
+    if(!companyId){
+        return next(new AppError('Company ID is required',400))
+    }
     console.log({companyId,userId,params:req.params});
     const member=await CompanyMember.findOne({
         user:userId,

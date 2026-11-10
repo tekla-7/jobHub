@@ -6,8 +6,9 @@ import {COMPANY_ROLES} from "./company.constants.js";
 import upload from "../../shared/utils/multer.config.js";
 
 const router = express.Router();
-router.use(protect)
+
 router.get('', companies);
+router.use(protect)
 router.get('/:companyId', company);
 router.patch('/:companyId', authorizeCompanyMember(COMPANY_ROLES.OWNER), upload.fields([
     {name: 'logo', maxCount: 1},

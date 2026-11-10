@@ -9,6 +9,7 @@ import {AuthCard} from "./layout/AuthCard";
 import getErrorMessage from "../../shared/utils/errorMessage";
 import FormField from "../../shared/components/FormField";
 import {alertBox, btnPrimary, linkStrong} from "./authStyles";
+import {PATHS} from "../../routes/paths";
 
 const schema = z
     .object({
@@ -52,7 +53,7 @@ export default function RegisterPage() {
             wide
             title="Create your account"
             subtitle="Choose how you'll use JobHub."
-            footer={<>Already have an account? <Link to="/authentication/login" className={linkStrong}>Log in</Link></>}
+            footer={<>Already have an account? <Link to={PATHS.login} className={linkStrong}>Log in</Link></>}
         >
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 {registerUser.isError && (

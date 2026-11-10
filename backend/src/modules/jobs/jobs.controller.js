@@ -1,13 +1,17 @@
 import {catchAsync} from "../../shared/errors/asynchronousError .js";
 import APIFeatures from "../../shared/utils/features.js";
-import {query, count, companyJobs, job, postJob, removeJob} from "./jobs.service.js";
+import {query, count, companyJobs, job, postJob, removeJob, jobs, getCategoryCounts} from "./jobs.service.js";
 import {AppError} from "../../shared/errors/appError.js";
+import {DEPARTMENTS} from "./jobs.constants.js";
 ///@desc get jobs
 ///@route post /api/jobs
 export const getJobs = catchAsync(async (req, res, next) => {
+
     const features = new APIFeatures(query(), req.query).filter().sort().paginate();
+
     const totalCount = await count(features.filterQuery);
-    const jobs = await features.query;
+
+    const jobs = await features.query.populate('company','name industry logo');
     res.status(200).json({
         message: `Get jobs successfully`,
         data: {
@@ -113,4 +117,22 @@ export const deleteJob = catchAsync(async (req, res, next) => {
         message: `Update job successfully`,
         data: jobDetail
     })
+})
+///@desc delete job
+///@route delete /api/jobs/categories
+export const jobCategories=catchAsync(async (req, res, next) => {
+        const categoryCounts = await getCategoryCounts();
+        const categories = Object.entries(DEPARTMENTS).map(([id, name]) => ({
+            id: Number(id),
+            name,
+            slug:name,
+            jobs:
+                categoryCounts.find((item) => item._id === name)?.count ?? 0,
+        }));
+
+        res.status(200).json({
+            status: "success",
+            results: categories.length,
+            data:categories ,
+        });
 })

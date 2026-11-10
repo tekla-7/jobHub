@@ -1,4 +1,5 @@
 import {Link} from "react-router-dom";
+import {PATHS} from "../../routes/paths";
 
 export default function NotFoundPage() {
     return <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4">
@@ -17,9 +18,9 @@ export default function NotFoundPage() {
                 Home
             </Link>
 
-            <Link to="/new-in">
-                Continue Shopping
-            </Link>
+            {/*<Link to={PATHS.dashboard}>*/}
+            {/*    Continue Shopping*/}
+            {/*</Link>*/}
         </div>
     </div>
 }

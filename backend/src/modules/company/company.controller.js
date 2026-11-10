@@ -5,17 +5,24 @@ import {ALLOWED_FIELDS, IMAGE_FIELDS} from "./company.constants.js";
 import uploadTOCloudinary from "../../shared/utils/uploadToCloudinary.js";
 import uploadToCloudinary from "../../shared/utils/uploadToCloudinary.js";
 import cloudinary from "../../config/cloudinary.js";
+import {companyJobs, countActiveJobsByCompanies} from "../jobs/jobs.service.js";
 ///@desc get companies
 ///@route get /api/company
 export const companies = catchAsync(async (req, res, next) => {
     const features = new APIFeatures(query(), req.query).filter().sort().paginate();
     const totalCount = await count(features.filterQuery);
-
     const companies = await features.query;
+    const companyIds=companies.map(c=>c._id)
+    const jobsCounts=await countActiveJobsByCompanies(companyIds)
+    const countMap=new Map(jobsCounts.map(i=>[i._id.toString(),i.count]))
+   const items=companies.map(c=>({
+       ...c.toObject(),
+       openRoles:countMap.get(c._id.toString())||0
+   }))
     res.status(200).json({
         message: `Get company successfully`,
         data: {
-            items: companies,
+            items,
             totalCount
         },
 

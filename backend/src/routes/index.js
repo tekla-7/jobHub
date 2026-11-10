@@ -5,8 +5,9 @@ import companyMemberRoutes from "../modules/companyMember/company-member.routes.
 import invitationRoutes from "../modules/invitation/invitation.routes.js";
 import jobsRoutes from "../modules/jobs/jobs.routes.js";
 import applicationRoutes from "../modules/application/application.routes.js";
-import userDetailsRoutes from "../modules/user/userDetails.routes.js";
 import savedJobsRoutes from "../modules/saveJobs/savedJobs.routes.js";
+import {platformStats} from "../modules/state/state.controller.js";
+import userDetailsRoutes from "../modules/user/userDetails.routes.js";
 const router=express.Router();
 router.use('/auth', authRoutes);
 router.use('/companies', companyRoutes);
@@ -16,6 +17,5 @@ router.use('/jobs', jobsRoutes);
 router.use('/applications', applicationRoutes);
 router.use('/users', userDetailsRoutes);
 router.use('/savedJobs', savedJobsRoutes);
-
-
+router.get('/stats', platformStats);
 export default router;

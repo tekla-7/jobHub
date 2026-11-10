@@ -4,10 +4,12 @@ import {COMPANY_ROLES} from "../company/company.constants.js";
 export const companyMemberSchema=new mongoose.Schema({
     user:{
         type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
     },
     company:{
         type: mongoose.Schema.Types.ObjectId,
+        ref: "Company",
         required: true
     },
     role:{

@@ -60,3 +60,8 @@ export const deleteRefreshToken= (token)=>{
 export const correctPassword = (password, hashedPassword) => {
     return bcrypt.compare(password, hashedPassword);
 };
+export const findUserCompanyMemberships = async (userId) => {
+    return CompanyMember.find({user: userId})
+        .populate("company", "name logo")
+        .select("company role");
+};

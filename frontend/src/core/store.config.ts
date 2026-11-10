@@ -4,7 +4,7 @@ import uiReducer from "../store/ui-slice";
 
 const store=configureStore({
     reducer:{
-        user:userReducer,
+        auth:userReducer,
         ui: uiReducer
 }
 });

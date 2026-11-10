@@ -6,7 +6,7 @@ export default class APIFeatures {
 
     filter() {
         const queryObj = {...this.queryString};
-        const excludedFields = ['page', 'sort', 'pageSize', 'fields','search'];
+        const excludedFields = ['page', 'sort', 'pageSize', 'fields','search','order'];
         excludedFields.forEach(item => delete queryObj[item]);
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(
@@ -25,12 +25,10 @@ export default class APIFeatures {
         return this
     }
     sort(){
-        if(this.queryString.sort){
-            const sortBy=this.queryString.sort.split(',').join(' ');
-            this.query = this.query.sort(sortBy);
-        }else {
-            this.query = this.query.sort('-createdAt');
-        }
+        const sortBy=this.queryString.sort||'createdAt';
+        const order=this.queryString.order==='asc'?1:-1;
+        this.query = this.query.sort({[sortBy]:order});
+
         return this;
     }
     paginate(){

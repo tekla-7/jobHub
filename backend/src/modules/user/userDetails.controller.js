@@ -5,7 +5,12 @@ import {getUserDetails} from "./userDetails.service.js";
 import uploadToCloudinary from "../../shared/utils/uploadToCloudinary.js";
 import {ALLOWED_FIELDS, IMAGE_FIELDS} from "./userDetails.constants.js";
 import cloudinary from "../../config/cloudinary.js";
-import {correctPassword, createAuthSession, deleteRefreshToken} from "../auth/auth.service.js";
+import {
+    correctPassword,
+    createAuthSession,
+    deleteRefreshToken,
+    findUserCompanyMemberships
+} from "../auth/auth.service.js";
 import {AppError} from "../../shared/errors/appError.js";
 import {findUser, userById} from "../auth/user.service.js";
 import {REFRESH_COOKIE_OPTIONS, REFRESH_TOKEN} from "../auth/auth.constants.js";
@@ -41,6 +46,18 @@ export const myDetails = catchAsync(async (req, res, next) => {
     return res.status(200).json({
         message: `Get user successfully`,
         data: user,
+    })
+})
+///me
+export const me = catchAsync(async (req, res, next) => {
+    const memberships = await findUserCompanyMemberships(req.user._id);
+
+    const userWithoutPassword = req.user.toObject();
+    delete userWithoutPassword.password;
+
+    return res.status(200).json({
+        message: `Get user successfully`,
+        data: {...userWithoutPassword,memberships},
     })
 })
 ///@desc update user
