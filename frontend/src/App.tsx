@@ -21,11 +21,11 @@ function AppContent() {
         }
     }, [data, dispatch]);
 
-    // useEffect(() => {
-    //     if (isError) {
-    //         dispatch(logout());
-    //     }
-    // }, [isError, dispatch]);
+    useEffect(() => {
+        if (isError) {
+            dispatch(logout());
+        }
+    }, [isError, dispatch]);
     return (<>
                 {<span id='modal'/>}
                 {notification && <Notification/>}

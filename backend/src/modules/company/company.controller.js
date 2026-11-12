@@ -9,16 +9,18 @@ import {companyJobs, countActiveJobsByCompanies} from "../jobs/jobs.service.js";
 ///@desc get companies
 ///@route get /api/company
 export const companies = catchAsync(async (req, res, next) => {
-    const features = new APIFeatures(query(), req.query).filter().sort().paginate();
+    const features = new APIFeatures(query(), req.query, ['name'])
+    await features.filter();
+    features.sort().paginate();
     const totalCount = await count(features.filterQuery);
     const companies = await features.query;
-    const companyIds=companies.map(c=>c._id)
-    const jobsCounts=await countActiveJobsByCompanies(companyIds)
-    const countMap=new Map(jobsCounts.map(i=>[i._id.toString(),i.count]))
-   const items=companies.map(c=>({
-       ...c.toObject(),
-       openRoles:countMap.get(c._id.toString())||0
-   }))
+    const companyIds = companies.map(c => c._id)
+    const jobsCounts = await countActiveJobsByCompanies(companyIds)
+    const countMap = new Map(jobsCounts.map(i => [i._id.toString(), i.count]))
+    const items = companies.map(c => ({
+        ...c.toObject(),
+        openRoles: countMap.get(c._id.toString()) || 0
+    }))
     res.status(200).json({
         message: `Get company successfully`,
         data: {
@@ -55,7 +57,7 @@ export const updateCompany = catchAsync(async (req, res, next) => {
             if (oldPublicId) {
                 oldPublicIds.push(oldPublicId);
             }
-            const result = await uploadToCloudinary(file.buffer,'companies');
+            const result = await uploadToCloudinary(file.buffer, 'companies');
             company[field] = result.secure_url;
             company[idField] = result.public_id;
         }

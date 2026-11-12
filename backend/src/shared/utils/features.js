@@ -1,10 +1,13 @@
 export default class APIFeatures {
-    constructor(query, queryString) {
+    constructor(query, queryString,searchFields=[],searchHandler=null) {
         this.query = query;
+        this.searchFields = searchFields;
         this.queryString = queryString;
+        this.searchHandler = searchHandler;
     }
 
-    filter() {
+
+    async filter() {
         const queryObj = {...this.queryString};
         const excludedFields = ['page', 'sort', 'pageSize', 'fields','search','order'];
         excludedFields.forEach(item => delete queryObj[item]);
@@ -14,12 +17,26 @@ export default class APIFeatures {
             match => `$${match}`
         );
         const filters=JSON.parse(queryStr);
-        if(this.queryString.search){
-            filters.name = {
+        if(this.queryString.search&&this.searchFields.length){
+            const regex={
                 $regex:this.queryString.search,
                 $options: 'i'
             }
-        }
+            const orFilters = this.searchFields.map(field => ({
+                [field]: regex
+            }));
+
+            if (this.searchHandler) {
+                const customFilters = await this.searchHandler(
+                    this.queryString.search
+                );
+
+                orFilters.push(...customFilters.$or || []);
+            }
+
+            if (orFilters.length) {
+                filters.$or = orFilters;
+            }        }
         this.filterQuery=filters
         this.query = this.query.find(filters);
         return this

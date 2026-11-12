@@ -9,7 +9,7 @@ export default function Categories() {
     return (
         <Section title="Browse by category">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-                {CATEGORIES?.map((c) => (
+                {CATEGORIES.slice(0,6)?.map((c) => (
                     <Link
                         key={c.slug}
                         to={`${PATHS.jobs}?category=${c.slug}`}

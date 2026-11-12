@@ -34,7 +34,7 @@ export default function UserMenu() {
     const switchTo = (companyId: string | null) => {
         dispatch(switchContext(companyId));
         setOpen(false);
-        navigate(companyId ? '/employer' : '/dashboard');
+        // navigate(companyId ? '/employer' : '/dashboard');
     };
 
     const handleLogout = () => { dispatch(logout()); qc.clear(); setOpen(false); navigate('/'); };

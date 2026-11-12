@@ -17,7 +17,9 @@ import {REFRESH_COOKIE_OPTIONS, REFRESH_TOKEN} from "../auth/auth.constants.js";
 ///@desc get users
 ///@route get /api/users
 export const users = catchAsync(async (req, res, next) => {
-    const features = new APIFeatures(query(), req.query).filter().sort().paginate();
+    const features = new APIFeatures(query(), req.query,['name'])
+    await features.filter();
+    features.sort().paginate();
     const totalCount = await count(features.filterQuery);
 
     const users = await features.query.select('user email headline openToWork profileImg').populate("user", 'name');

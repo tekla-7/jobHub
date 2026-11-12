@@ -14,6 +14,6 @@ const savedJobsSchema = mongoose.Schema({
 
 }, {timestamps: true});
 savedJobsSchema.index({
-    candidate: 1, job: 1
+    user: 1, job: 1
 }, {unique: true});
 export default mongoose.model("SavedJobs", savedJobsSchema);

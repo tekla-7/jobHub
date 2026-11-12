@@ -13,7 +13,7 @@ import {AppError} from "./shared/errors/appError.js";
 import {GlobalErrorHandler} from "./shared/errors/error.controller.js";
 const allowedOrigins = ["http://localhost:5173"];
 const limiter=rateLimit({
-    max: 10,
+    max: 80,
     windowMs: 60*1000,
     message:'Too many requests from IO,please try again in an minute'
 })

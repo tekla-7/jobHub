@@ -8,10 +8,10 @@ const router=express.Router();
 
 router.get('/categories', jobCategories);
 router.get('',getJobs)
+router.get('/:jobId',getJob)
+router.get('/company/:companyId',getCompanyJobs)
 
 router.use(protect)
-router.get('/company/:companyId',getCompanyJobs)
-router.get('/:jobId',getJob)
 // router.use(authorizeCompanyMember([COMPANY_ROLES.OWNER,COMPANY_ROLES.ADMIN,COMPANY_ROLES.RECRUITER]))
 router.post('/company/:companyId',authorizeCompanyMember([COMPANY_ROLES.OWNER,COMPANY_ROLES.ADMIN,COMPANY_ROLES.RECRUITER]),createJob)
 router.patch('/company/:companyId/:jobId',authorizeCompanyMember([COMPANY_ROLES.OWNER,COMPANY_ROLES.ADMIN,COMPANY_ROLES.RECRUITER]),createJob)

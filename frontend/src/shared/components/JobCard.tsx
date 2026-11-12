@@ -20,7 +20,7 @@ export default function JobCard({ job }: { job: Job }) {
                     </div>
                 </div>
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
-                    <span className="rounded-[5px] bg-[#E9EEF7] px-2.5 py-1 text-[11.5px] font-semibold text-[#1E3E70]">{job.type}</span>
+                    <span className="rounded-[5px] bg-[#E9EEF7] px-2.5 py-1 text-[11.5px] font-semibold text-[#1E3E70]">{job.type||'-'}</span>
                     {job.skills.map((s) => (
                         <span key={s} className="rounded-[5px] bg-[#EEF0F2] px-2.5 py-1 text-[11.5px] font-semibold text-[#667085]">{s}</span>
                     ))}

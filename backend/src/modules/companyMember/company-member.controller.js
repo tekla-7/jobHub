@@ -6,7 +6,9 @@ import {deleteMember, getCompanyMember, getMemberById, getTotalCount} from "./co
 
 export const companyMembers = catchAsync(async (req, res, next) => {
     const {companyId} = req.params;
-    const features = new APIFeatures(getCompanyMember(companyId), req.query).filter().sort().paginate();
+    const features = new APIFeatures(getCompanyMember(companyId), req.query,['name'])
+    await features.filter();
+    features.sort().paginate();
     const totalCount = await getTotalCount(features.filterQuery);
     const companies = await features.query.populate('user', 'name email');
     res.status(200).json({

@@ -13,6 +13,9 @@ import {Placeholder} from "../shared/components/Placeholders";
 import PublicLayout from "../shared/layouts/PublicLayout";
 import DashboardLayout from "../shared/layouts/DashboardLayout";
 import LandingPage from "../features/landing/LandingPage";
+import JobsPage from "../features/jobs/JobsPage";
+import JobDetailsPage from "../features/jobs/JobDetailsPage";
+import ForEmployersPage from "../features/forEmployers/ForEmployersPage";
 const P = (title: string) => <Placeholder title={title} />;
 
 // const router = createBrowserRouter([
@@ -86,11 +89,11 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             { index: true, element:<LandingPage/>},
-            { path: 'jobs', element: P('Jobs') },
-            { path: 'jobs/:id', element: P('Job details') },
+            { path: 'jobs', element:<JobsPage/>},
+            { path: 'jobs/:id', element: <JobDetailsPage/> },
             { path: 'companies', element: P('Companies') },
             { path: 'companies/:id', element: P('Company page') },
-            { path: 'for-employers', element: P('For employers') },
+            { path: 'for-employers', element: <ForEmployersPage/> },
         ],
     },
 

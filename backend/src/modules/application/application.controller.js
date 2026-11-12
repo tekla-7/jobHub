@@ -48,7 +48,9 @@ export const submitApplication = catchAsync(async (req, res, next) => {
 ///@route get /api/application/me
 export const myApplication = catchAsync(async (req, res, next) => {
     const id = req.user._id;
-    const features = new APIFeatures(userApplication(id), req.query).filter().sort().paginate();
+    const features = new APIFeatures(userApplication(id), req.query,['name'])
+    await features.filter();
+    features.sort().paginate();
     const totalCount = await count(features.filterQuery);
     const application = await features.query.populate({
         path: 'job',
@@ -71,7 +73,9 @@ export const myApplication = catchAsync(async (req, res, next) => {
 ///@route get /api/application/companies/:companyId
 export const myCompanyApplication = catchAsync(async (req, res, next) => {
     const {companyId} = req.params;
-    const features = new APIFeatures(companyApplication(companyId), req.query).filter().sort().paginate();
+    const features = new APIFeatures(companyApplication(companyId), req.query,['name'])
+    await features.filter();
+    features.sort().paginate();
     const totalCount = await count(features.filterQuery);
     const application = await features.query.populate('candidate', 'name');
     res.status(200).json({
