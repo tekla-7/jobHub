@@ -19,7 +19,7 @@ export const companies = catchAsync(async (req, res, next) => {
     const countMap = new Map(jobsCounts.map(i => [i._id.toString(), i.count]))
     const items = companies.map(c => ({
         ...c.toObject(),
-        openRoles: countMap.get(c._id.toString()) || 0
+        openJobs: countMap.get(c._id.toString()) || 0
     }))
     res.status(200).json({
         message: `Get company successfully`,

@@ -8,8 +8,9 @@ import upload from "../../shared/utils/multer.config.js";
 const router = express.Router();
 
 router.get('', companies);
-router.use(protect)
 router.get('/:companyId', company);
+
+router.use(protect)
 router.patch('/:companyId', authorizeCompanyMember(COMPANY_ROLES.OWNER), upload.fields([
     {name: 'logo', maxCount: 1},
     {name: 'coverImg', maxCount: 1},

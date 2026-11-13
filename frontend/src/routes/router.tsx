@@ -16,6 +16,8 @@ import LandingPage from "../features/landing/LandingPage";
 import JobsPage from "../features/jobs/JobsPage";
 import JobDetailsPage from "../features/jobs/JobDetailsPage";
 import ForEmployersPage from "../features/forEmployers/ForEmployersPage";
+import CompaniesPage from "../features/companies/CompaniesPage";
+import CompanyPage from "../features/companies/CompantPage";
 const P = (title: string) => <Placeholder title={title} />;
 
 // const router = createBrowserRouter([
@@ -91,8 +93,8 @@ const router = createBrowserRouter([
             { index: true, element:<LandingPage/>},
             { path: 'jobs', element:<JobsPage/>},
             { path: 'jobs/:id', element: <JobDetailsPage/> },
-            { path: 'companies', element: P('Companies') },
-            { path: 'companies/:id', element: P('Company page') },
+            { path: 'companies', element: <CompaniesPage/> },
+            { path: 'companies/:id', element: <CompanyPage/> },
             { path: 'for-employers', element: <ForEmployersPage/> },
         ],
     },
