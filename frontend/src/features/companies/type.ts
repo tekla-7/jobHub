@@ -24,3 +24,11 @@ export interface CompanyFilters {
     size: string;
     page: number;
 }
+
+export interface CreateCompanyBody {
+    name: string;
+    industry?: string;
+    size?: string;
+    location?: string;
+    website?: string;
+}

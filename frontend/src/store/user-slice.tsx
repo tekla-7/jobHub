@@ -1,4 +1,4 @@
-import {AuthResponse, User} from "../features/auth/auth.types";
+import {AuthResponse, Membership, User} from "../features/auth/auth.types";
 import {getAuthToken, removeAuthToken, setAuthToken} from "../shared/utils/auth";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {ACTIVE_KEY, resolveActiveCompanyId} from "../shared/utils/homeFrom";
@@ -30,6 +30,11 @@ const authSlice = createSlice({
             state.activeCompanyId = resolveActiveCompanyId(payload);
 
         },
+        addMembership(state,{payload}: PayloadAction<Membership>) {
+            if(state.user&&!state.user.memberships.some(m=>m.company._id === payload.company._id)) {
+                state.user.memberships.push(payload);
+            }
+        },
         switchContext(state, { payload }: PayloadAction<string | null>) {
             state.activeCompanyId = payload;
             if (payload) localStorage.setItem(ACTIVE_KEY, payload);
@@ -45,5 +50,5 @@ const authSlice = createSlice({
         }
     }
 })
-export const {setCredentials,setUser,switchContext,logout} = authSlice.actions;
+export const {setCredentials,setUser,switchContext,logout,addMembership} = authSlice.actions;
 export default authSlice.reducer;

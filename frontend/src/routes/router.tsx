@@ -18,6 +18,7 @@ import JobDetailsPage from "../features/jobs/JobDetailsPage";
 import ForEmployersPage from "../features/forEmployers/ForEmployersPage";
 import CompaniesPage from "../features/companies/CompaniesPage";
 import CompanyPage from "../features/companies/CompantPage";
+import CreateCompanyPage from "../features/companies/CreateCompanyPage";
 const P = (title: string) => <Placeholder title={title} />;
 
 // const router = createBrowserRouter([
@@ -98,7 +99,12 @@ const router = createBrowserRouter([
             { path: 'for-employers', element: <ForEmployersPage/> },
         ],
     },
-
+    {
+        path: '/create-company',
+        element: <ProtectedRoute><AuthLayout /></ProtectedRoute>,
+        errorElement: <ErrorPage />,
+        children: [{ index: true, element: <CreateCompanyPage /> }],
+    },
     //  only allow not login
     {
         path: '/authentication',

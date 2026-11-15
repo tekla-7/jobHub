@@ -14,4 +14,5 @@ export const PATHS = {
 
     // company account
     employer: '/employer',
+    createCompany:'/create-company',
 } as const;

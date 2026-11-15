@@ -80,7 +80,7 @@ export default function RegisterPage() {
                 {role === 'employer' && (
                     <div className="mt-5 border-t border-dashed border-[#E4E7EC] pt-5">
                         <FormField
-                            label="Company name" placeholder="Tera"
+                            label="Company name" placeholder="JobHub"
                             hint="This creates your company's public profile on JobHub."
                             error={errors.companyName?.message} {...register('companyName')}
                         />
