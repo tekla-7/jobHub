@@ -7,6 +7,7 @@ const userDetailsSchema=new mongoose.Schema({
         required:true,
         unique:true
     },
+    name:String,
     phone:String,
     email:String,
     LinkedIn:String,
@@ -26,6 +27,10 @@ const userDetailsSchema=new mongoose.Schema({
             startAt:Date,
             endAt:Date,
             description:String,
+            current: {
+                type: Boolean,
+                default: false
+            }
         },
     ],
     education:[{
@@ -41,7 +46,13 @@ const userDetailsSchema=new mongoose.Schema({
     },
     cv: String,
     profilePublicId:String,
-
+    website: String,
+    contactVisibility: {
+        type: String,
+        enum: ['applied', 'all', 'none'],
+        default: 'applied'
+    },
+    cvPublicId: String,
 
 },{timestamps:true});
 export default mongoose.model("UserDetails",userDetailsSchema);

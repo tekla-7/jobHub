@@ -29,8 +29,14 @@ export default function UserMenu() {
 
     if (!user) return null;
 
-    const initials = user.name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
-
+    const initials = (user.name ?? '')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((p) => p[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase() || 'U';
     const switchTo = (companyId: string | null) => {
         dispatch(switchContext(companyId));
         setOpen(false);

@@ -15,3 +15,13 @@ export interface Application {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface ApplicationResponse {
+
+    items
+        :
+        Application[];
+    totalCount
+        :
+        number
+}

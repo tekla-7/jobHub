@@ -21,11 +21,11 @@ const schema = z
         companyName: z.string().optional(),
         terms: z.boolean().refine((v) => v, 'You must accept the terms'),
     })
-    .refine((d) => d.role === 'employer' || !!d.companyName?.trim(), {
+    .refine((d) => d.role !== 'employer' || !!d.companyName?.trim(), {
         path: ['companyName'],
         message: 'Company name is required',
     })
-    .refine((d) => d.password &&d.password!==d.confirmPassword , {
+    .refine((d) => d.password &&d.password===d.confirmPassword , {
         path: ['confirmPassword'],
         message: 'Confirm password is incorrect',
     });
@@ -44,7 +44,8 @@ export default function RegisterPage() {
     const role = watch('role');
 
     const onSubmit = ({ terms, ...body }: FormValues) =>
-        registerUser.mutate(body, {
+        registerUser.mutate({...body, type: role === 'candidate' ? 'user' : 'company',
+        }, {
             onSuccess: ({ user }) => navigate(homeFor(user), { replace: true }),
         });
 

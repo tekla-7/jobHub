@@ -32,7 +32,7 @@ function usePatchProfile<TVars, TData>(fn: (v: TVars) => Promise<TData>, merge: 
     });
 }
 
-export const useUploadAvatar = () => usePatchProfile(uploadAvatar, (p, d) => ({ ...p, avatarUrl: d.avatarUrl }));
+export const useUploadAvatar = () => usePatchProfile(uploadAvatar, (p, d) => ({ ...p, avatarUrl: d?.avatarUrl }));
 export const useDeleteAvatar = () => usePatchProfile(deleteAvatar, (p) => ({ ...p, avatarUrl: undefined }));
 export const useUploadCv = () => usePatchProfile(uploadCv, (p, d) => ({ ...p, cvUrl: d.cvUrl, cvName: d.cvName }));
 export const useDeleteCv = () => usePatchProfile(deleteCv, (p) => ({ ...p, cvUrl: undefined, cvName: undefined }));

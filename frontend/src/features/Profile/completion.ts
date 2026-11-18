@@ -3,6 +3,7 @@ import {Profile} from "./type";
 export interface CompletionItem { key: string; label: string; done: boolean }
 
 export function profileCompletion(p: Profile): { percent: number; items: CompletionItem[] } {
+    console.log(p)
     const items: CompletionItem[] = [
         { key: 'photo', label: 'Add a profile photo', done: !!p.avatarUrl },
         { key: 'headline', label: 'Add a professional headline', done: !!p.headline?.trim() },

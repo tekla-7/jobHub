@@ -20,6 +20,8 @@ import CompaniesPage from "../features/companies/CompaniesPage";
 import CompanyPage from "../features/companies/CompantPage";
 import CreateCompanyPage from "../features/companies/CreateCompanyPage";
 import DashboardPage from "../features/dashboard/DashboardPage";
+import ProfilePage from "../features/Profile/ProfilePage";
+import EditProfilePage from "../features/Profile/EditProfilePage";
 const P = (title: string) => <Placeholder title={title} />;
 
 // const router = createBrowserRouter([
@@ -125,8 +127,8 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             { index: true, element:<DashboardPage /> },
-            { path: 'profile', element: P('My profile') },
-            { path: 'profile/edit', element: P('Edit profile') },
+            { path: 'profile', element: <ProfilePage/> },
+            { path: 'profile/edit', element: <EditProfilePage /> },
             { path: 'saved', element: P('Saved jobs') },
             { path: 'applications', element: P('Applications') },
             { path: 'settings', element: P('Settings') },

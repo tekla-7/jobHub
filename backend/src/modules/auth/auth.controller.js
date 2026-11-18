@@ -19,14 +19,15 @@ export const register = catchAsync(async (req, res, next) => {
     if (!['user', 'company'].includes(type)) {
         return next(new AppError('Type is necessary', 400));
     }
+    let session;
     try {
-        const session = await mongoose.startSession();
+        session = await mongoose.startSession();
         let user;
         let company;
         session.startTransaction();
-        const {name, email, password, confirmPassword, companyName} = req.body;
+        const {fullName, email, password, confirmPassword, companyName} = req.body;
         user = await registerUser({
-            name,
+            name: fullName,
             email,
             password,
             confirmPassword,
@@ -37,23 +38,22 @@ export const register = catchAsync(async (req, res, next) => {
 
 
         }
-        await registerUserDetails(user.id, session)
+        await registerUserDetails(user.id,email,fullName, session)
         await session.commitTransaction()
 
         const {refreshToken, token} = await createAuthSession({
             id: user.id,
         });
+        const memberships = await findUserCompanyMemberships(user._id);
 
         res.cookie(REFRESH_TOKEN, refreshToken, REFRESH_COOKIE_OPTIONS);
+        const userWithoutPassword = user.toObject();
+        delete userWithoutPassword.password;
         res.status(201).json({
             message: `${type} created successfully`,
-            data: {
-                user,
-                userDetails,
-                ...(company && {compnay})
-            },
-            type,
-            token
+            token,
+            user: {...userWithoutPassword, memberships}
+
         });
     } catch (error) {
         await session.abortTransaction();
@@ -85,7 +85,7 @@ export const login = catchAsync(async (req, res, next) => {
     res.status(200).json({
         message: `Login successfully`,
         token,
-        user: {...userWithoutPassword,memberships}
+        user: {...userWithoutPassword, memberships}
     });
 })
 
@@ -144,7 +144,7 @@ export const changePassword = catchAsync(async (req, res, next) => {
     user.password = await hash(this.password, 10);
     await user.save();
     await deleteRefreshToken(user._id)
-    const {refreshToken,token}=await createAuthSession(({id:iser._id}))
+    const {refreshToken, token} = await createAuthSession(({id: iser._id}))
     res.cookie(REFRESH_TOKEN, refreshToken, REFRESH_COOKIE_OPTIONS);
     return res.status(200).json({
         message: "Password changed successfully",

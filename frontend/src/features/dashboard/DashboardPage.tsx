@@ -26,7 +26,7 @@ export default function DashboardPage() {
     const applications = useApplications();
     const saved = useSavedJobs();
 
-    const apps = applications.data ?? [];
+    const apps = applications?.data?.items ?? [];
     const completion = profile.data ? profileCompletion(profile.data) : null;
     const missing = completion?.items.filter((i) => !i.done) ?? [];
     const firstName = user?.name.split(' ')[0] ?? '';
@@ -57,8 +57,8 @@ export default function DashboardPage() {
             )}
 
             <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-                <Stat label="Applications" value={dash(apps.length)} to={`${PATHS.dashboard}/applications`} />
-                <Stat label="Under review" value={dash(apps.filter((a) => a.status === 'reviewing').length)} to={`${PATHS.dashboard}/applications`} />
+                <Stat label="Applications" value={dash(apps?.length)} to={`${PATHS.dashboard}/applications`} />
+                <Stat label="Under review" value={dash(apps?.filter((a) => a.status === 'reviewing').length)} to={`${PATHS.dashboard}/applications`} />
                 <Stat label="Interviews" value={dash(apps.filter((a) => a.status === 'interview').length)} to={`${PATHS.dashboard}/applications`} />
                 <Stat label="Saved jobs" value={saved.data ? saved.data.length : '–'} to={`${PATHS.dashboard}/saved`} />
             </div>

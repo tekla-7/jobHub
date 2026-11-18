@@ -9,6 +9,7 @@ export interface LoginBody {
 }
 
 export interface RegisterBody {
+    type:string;
     fullName: string;
     email: string;
     password: string;
